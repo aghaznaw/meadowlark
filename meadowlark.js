@@ -5,7 +5,15 @@ var fortune = require('./lib/fortune.js');
 
 //Set up handlebars view engine
 var handlebars = require('express3-handlebars').
-                 create({defaultLayout: 'main'});
+                 create({defaultLayout: 'main',
+                 helpers: {
+                   section: function(name, options){
+                     if(!this._sections) this._sections = {};
+                     this._sections[name] = options.fn(this);
+                     return null;
+                   }
+                 }
+                });
 
 app.engine('handlebars', handlebars.engine);
 app.disable('x-powered-by');
