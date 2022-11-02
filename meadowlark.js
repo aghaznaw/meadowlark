@@ -15,6 +15,8 @@ var handlebars = require('express3-handlebars').
                  }
                 });
 
+var formidable = require('formidable');
+
 app.use(require('body-parser')());
 app.engine('handlebars', handlebars.engine);
 app.disable('x-powered-by');
@@ -26,6 +28,26 @@ app.use(express.static(__dirname + '/public'));
 app.use(function(req, res, next){
   res.locals.showTests = req.query.test;
    next();
+});
+
+app.post('/contest/vacation-photo/:year/:month', function(req, res){
+  var form = new formidable.IncomingForm();
+  form.parse(req, function(err, fields, files){
+    if(err){
+      return redirect(303, '/error');
+    }
+    console.log("Fields recived: ");
+    console.log(fields);
+    console.log("Files recived: ");
+    console.log(files);
+    res.redirect(303, '/thank-you');
+  })
+});
+
+app.get('/contest/vacation-photo', function(req, res){
+  var date = new Date();
+  res.render('contest/vacation-photo', {year: date.getFullYear(),
+        month: date.getMonth()});
 });
 
 app.get('/newsletter', function(req, res){
